@@ -1,0 +1,11 @@
+/* = 轮播渐变背景盒子 */
+.banner-background-box {
+    position: absolute;
+    left: 0;
+    background-size: 6000px;
+    background-position: center center;
+}
+.page-content{
+    width: 982px;
+    margin: 0 auto;
+}
