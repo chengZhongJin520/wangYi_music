@@ -86,6 +86,11 @@ button {
     outline: none;
     border: none;
 }
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: normal;
+}
 
 .cover {
     object-fit: cover;
@@ -113,12 +118,23 @@ button {
 .esay-scrollbar__bar.is-vertical {
     background-color: transparent !important;
 }
-body {
-    background-color: #f5f5f5;
+.oneline {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+}
+
+html body {
+    overflow-y: scroll;
+    background-color: #f2f2f2;
 }
 #content {
+    position: relative;
     width: 982px;
     margin: 0 auto;
+    background-color: #fff;
+    /* background:url("https://s2.music.126.net/style/web2/img/frame/wrap1.png") repeat; */
 }
 
 /* .zm_text {

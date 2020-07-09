@@ -1,25 +1,26 @@
-import React, { useMemo , useState , useCallback , useRef , useEffect , memo } from 'react';
+import React, { memo , useMemo , useState , useRef , useCallback , useEffect } from 'react';
 import { Link } from "react-router-dom"
-
-import "../css/coms/banner.css"
-// 默认设置项
-const defaultConfig = {
-    boxheight:300
-    // 按钮设置项
-    ,btnwidth:40
-    ,btnheight:80
-    ,controlBoxwidth:"100%"
-    ,controlshow:true
-    ,playtime:2000
-    ,playtype:'left'
-    ,playauto:false
-    ,playpause:false
+import "../css/coms/music-banner.css"
+const defaultConf = {
+    // "boxheight":300,
+    "btnwidth":18
+    ,"btnheight":18
+    ,"itemwidth":118
+    ,"itemheight":150
+    ,"controlBoxwidth":"100%"
+    ,"controlshow":false
+    ,"playtime":2000
+    ,"playtype":'left'
+    ,"playauto":false
+    ,"playpause":false
+    ,"pagesize":1
 }
-const BannerCom = memo(props => {
-    ;const { list=[] , Active=0 , change=()=>{} , config={} } = props
+export default memo( props => {
+    ;const { list=[] , Active=0 , change=()=>{} , data:config={} } = props
     //= 控制动画的暂停和播放
     ;const [pause , changePause] = useState( false )
     ;const [opacity , changeOpacity] = useState( 1 )
+    ;const [showPlay , changeShowPlay] = useState( false )
     //= 当前轮播页
     ;const [nowActive , changeNowActive] = useState( Active )
     //= banner的dom元素
@@ -31,11 +32,9 @@ const BannerCom = memo(props => {
     //= 鼠标事件
     ;const enter = useCallback(e => changePause(true) && e.stopPropagation(),[])
     ;const leave = useCallback(e => !isChild(banner , e.relatedTarget) && changePause(false),[banner,isChild])
+    ;const showPlayBtn = useCallback((e,index) => changeShowPlay(index),[])
+    ;const hidePlayBtn = useCallback(e => changeShowPlay(false),[])
     
-    
-    //= 数组重组
-    ;const newList = useMemo(() => [ list[list.length-1] ,...list , list[0] ] , [list])
-    //= 配置项
     ;const conf = useMemo(() => {
         ;const conf = {
             box:{}
@@ -43,36 +42,53 @@ const BannerCom = memo(props => {
             ,control:{}
             ,play:{}
             ,banner:{}
+            ,page:{}
+            ,item:{}
         }
         ;const newConf = config
-        ;Object.keys(defaultConfig).forEach(key => {
+        ;Object.keys(defaultConf).forEach(key => {
             ;if( /^box/.test(key) ) {
-                ;conf.box[`${key.replace("box","")}`] = newConf[key] || defaultConfig[key]
+                ;conf.box[`${key.replace("box","")}`] = newConf[key] || defaultConf[key]
             } else 
             if( /^btn/.test(key) ) {
-                ;conf.btn[`${key.replace("btn","")}`] = newConf[key] || defaultConfig[key]
+                ;conf.btn[`${key.replace("btn","")}`] = newConf[key] || defaultConf[key]
             } else 
             if( /^control/.test(key) ) {
-                ;conf.control[`${key.replace("control","")}`] = newConf[key] || defaultConfig[key]
+                ;conf.control[`${key.replace("control","")}`] = newConf[key] || defaultConf[key]
+            } else 
+            if( /^page/.test(key) ) {
+                ;conf.page[`${key.replace("page","")}`] = newConf[key] || defaultConf[key]
+            } else 
+            if( /^item/.test(key) ) {
+                ;conf.item[`${key.replace("item","")}`] = newConf[key] || defaultConf[key]
             } else 
             if( /^play/.test(key) ) {
-                ;conf.play[`${key.replace("play","")}`] = newConf[key] || defaultConfig[key]
+                ;conf.play[`${key.replace("play","")}`] = newConf[key] || defaultConf[key]
             } else {
-                ;conf.banner[key] = newConf[key] || defaultConfig[key]
+                ;conf.banner[key] = newConf[key] || defaultConf[key]
             }
         } )
         ;if( conf.play.time < 500 ) conf.play.time = 500
-        console.log( "banner设置项改变" );
+        console.log( "music-banner设置项改变" );
         ;return conf
     } , [config])
-
+    ;const lists = useMemo(() => {
+        ;const size = conf.page.size
+        ;const arr = list
+        ;const len = arr.length
+        ;const beforeList = arr.slice( len - size )
+        ;const afterList = arr.slice( 0 , size )
+        return beforeList.concat( arr , afterList )
+    } , [list , conf.page.size])
+    console.log( "music-banner" );
     //= ul样式
     ;const setUlStyle = useCallback(() => {
         // console.log( "ul样式" );
-        ;const len = newList.length 
-        ;const index = nowActive + 1
+        ;const len = lists.length 
         ;const type = conf.play.type
-        ;const obj = { width:`${len * 100}%` ,left:`${-index * 100 }%` , transition: `${type} 0.5s linear`}
+        ;const width = conf.item.width + 11
+        ;const size = conf.page.size
+        ;const obj = { width:`${len * width}px` ,left:`${-size * width * (nowActive+1) }px` , transition: `${type} 0.5s linear`}
         ;if( type === "opacity" ) {
             ;obj.opacity = opacity
             ;obj.transition= "opacity 0.5s linear"
@@ -81,10 +97,10 @@ const BannerCom = memo(props => {
             ;obj.transition = "none 0s linear"
         }
         ;return obj
-    },[conf.play.type, newList.length, nowActive , pause , opacity])
+    },[lists.length, conf.play.type, conf.item.width, conf.page.size, pause, opacity , nowActive])
     //= ul类
     ;const getClass = useCallback( index => {
-        ;const len = newList.length
+        ;const len = lists.length
         ;let name = ""
         // 当前页
         ;if( index-1 === nowActive ) {
@@ -100,10 +116,10 @@ const BannerCom = memo(props => {
             name += "active"
         }
         ;return name
-    },[nowActive , newList.length])
+    },[nowActive , lists.length])
     //= 改变当前页的方法
     ;const changeActive = useCallback( ( num , del ) => {
-        ;const len = newList.length
+        ;const len = lists.length / conf.page.size
         ;const addNum = !del ? 1 : -1
         ;const type = conf.play.type
         ;let target = typeof num === "number" ? num : nowActive + addNum
@@ -148,7 +164,7 @@ const BannerCom = memo(props => {
         }
         change(target)
         ;return true
-    },[newList.length, nowActive, change , conf.play.type])
+    },[lists.length, conf.page.size, conf.play.type, nowActive, change])
     ;const click = useCallback(type => changeActive("click" , type === "del"),[changeActive])
     //= 动画
     ;useEffect(() => {
@@ -156,7 +172,7 @@ const BannerCom = memo(props => {
             ;clearTimeout(ref.current)
             ;ref.current = null
         }
-        ;if( !animate.current && !pause && !conf.play.pause) {
+        ;if( !animate.current && !pause && !conf.play.pause && conf.play.auto) {
             ;const { type , time , auto } = conf.play
             ;let playTime = Math.max(type === "opacity" ? time - 600 : time , 0)
             ;animate.current = setTimeout(() => {
@@ -164,7 +180,7 @@ const BannerCom = memo(props => {
                     changeActive()
                 } else {
                     ;const delNum = auto ? 1 : 2
-                    ;if( nowActive + 1 >= newList.length - delNum ) {
+                    ;if( nowActive + 1 >= lists.length - delNum ) {
                         ;if( auto )  changeActive(0)
                         stop(animate)
                     } else {
@@ -178,25 +194,30 @@ const BannerCom = memo(props => {
         }
         // console.log( "%ceffect ==========> 启动" , "font-size:40px;" , animate.current);
         return () => stop(animate)
-    },[changeActive, conf.play, newList.length, nowActive, pause])
+    },[changeActive, conf.play, lists.length, nowActive, pause])
     return (
-        <div className="banner-box" style={conf.box} ref={banner}>
-            <div className="banner-left-btn" style={conf.btn} onMouseEnter={enter} onMouseLeave={leave} onClick={() => click("del")}>
-                <svg t="1593421081078" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1325" width="200" height="200"><path d="M294.134 512c0-13.701 5.232-27.402 15.667-37.847l328.704-328.694c20.91-20.91 54.804-20.91 75.704 0 20.9 20.9 20.9 54.794 0 75.705L423.363 512l290.836 290.836c20.9 20.9 20.9 54.805 0 75.705-20.9 20.91-54.794 20.91-75.704 0L309.79 549.847c-10.435-10.445-15.657-24.146-15.657-37.847z" p-id="1326"></path></svg>
-            </div>
-            <div className="banner-rigth-btn" style={conf.btn} onMouseEnter={enter} onMouseLeave={leave} onClick={() => click("add")}>
-                <svg t="1593420941824" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1199" width="200" height="200"><path d="M714.199 549.847L385.495 878.541c-20.91 20.91-54.804 20.91-75.704 0-20.9-20.9-20.9-54.805 0-75.705L600.637 512 309.801 221.164c-20.9-20.91-20.9-54.805 0-75.705 20.9-20.91 54.794-20.91 75.704 0L714.21 474.153c10.445 10.455 15.667 24.146 15.667 37.847s-5.232 27.402-15.677 37.847z" p-id="1200"></path></svg>
-            </div>
+        <div className="music-banner-box" style={conf.box} ref={banner}>
+            <i className="banner-left-btn" style={conf.btn} onMouseEnter={enter} onMouseLeave={leave} onClick={() => click("del")}>
+            </i>
+            <i className="banner-rigth-btn" style={conf.btn} onMouseEnter={enter} onMouseLeave={leave} onClick={() => click("add")}>
+            </i>
             <div className="banner-view" style={conf.banner} onMouseEnter={enter} onMouseLeave={leave}>
                 <ul style={setUlStyle()}>
                     {
-                        newList.map( (item , index) => (
-                            <li key={item.imgSrc + index}>
-                                <Link to={item.url || "/"}>
-                                    <img src={item.imgSrc} alt={item.typeTitle}/>
-                                </Link>
-                            </li>
-                        ))
+                        lists.map( (item , index) => {
+                            // console.log( item );
+                            return (
+                                <li key={item.id + index} style={conf.item}>
+                                    <div className="item-img-box" onMouseEnter={e => showPlayBtn(e , index)} onMouseLeave={e => hidePlayBtn(e)}>
+                                        <img src={item.imgSrc} alt={`新碟:${item.name}`} title={item.name}/>
+                                        <Link to={`/album?id=${item.id}`} title={item.name} className="item-img-link"></Link>
+                                        <button title="播放" style={{opacity: showPlay === index ? 1 : 0}}></button>
+                                    </div>
+                                    <Link to={`/album?id=${item.id}`} title={item.name} className="item-link oneline">{item.name}</Link>
+                                    <Link to={`/artist?id=${item.artist.id}`} title={item.artist.name} className="item-artist-link">{item.artist.name}</Link>
+                                </li>
+                            )
+                        })
                     }
                 </ul>
             </div>
@@ -204,7 +225,7 @@ const BannerCom = memo(props => {
                 conf.control.show && 
                 <div className="banner-control" style={{width:conf.control.Boxwidth}}>
                     {
-                        newList.map( (item,index) => (
+                        lists.map( (item,index) => (
                             <i key={item.imgSrc + index} className={getClass(index)} onClick={() => changeActive( index-1 )}></i>
                         ))
                     }
@@ -213,5 +234,3 @@ const BannerCom = memo(props => {
         </div>
     )
 })
-
-export default BannerCom

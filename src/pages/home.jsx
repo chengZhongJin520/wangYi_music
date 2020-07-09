@@ -1,40 +1,33 @@
 /*
  * @Author: 成中锦
  * @Date: 2020-06-20 13:28:32
- * @LastEditTime: 2020-06-30 09:52:57
+ * @LastEditTime: 2020-07-03 15:43:24
  * @FilePath: \wangyi_music\src\pages\home.jsx
  */ 
 import React , { Fragment , useContext , useEffect , useCallback , useState } from 'react';
 import { State as Store } from "../store"
-import { CHANGE_BANNERLIST } from "../store/type"
-import { Action } from "../store/commit"
-import Banner from "../components/banner"
+// import { CHANGE_BANNERLIST } from "../store/type"
+import { pageSend } from "../store/commit"
+
+import HomeBanner from "../components/pageCom/home/home-banner"
+import HomeRecommend from "../components/pageCom/home/home-recommend"
 import "../css/pages/home.css"
-;const bannerConf = {
-    boxheight: 285
-    ,btnwidth:38
-    ,btnheight:64
-}
+
 function App () {
-    ;const { dispatchbannerList , bannerList , windowWidth } = useContext(Store)
+    ;const { dispatchhome , home:{recommend}} = useContext(Store)
+    ;const [hotRecommend_length] = useState(recommend[0].childLength)
     ;const send = useCallback( async ()=> {
-        ;const res = await Action[CHANGE_BANNERLIST]()
-        ;dispatchbannerList({type:CHANGE_BANNERLIST,val:res[0]})
-    },[dispatchbannerList])
-    
-    ;const [ bannerActive , change_bannerActive ] = useState(0)
-    ;const [ bannerConfig ] = useState(JSON.stringify(bannerConf))
+        console.log( "首页请求数据" );
+        await pageSend.HOME({size:hotRecommend_length ,call:dispatchhome})
+    },[dispatchhome, hotRecommend_length])
     ;useEffect(()=> {send()},[send])
-    console.log( "首页 =============> 渲染" , bannerList);
-    return (
+    ;return (
         <Fragment>
-            {
-                bannerList.length > 0 && <div style={{ width:windowWidth+"px" ,backgroundImage:`url(${bannerList[bannerActive].imageUrl}?imageView&blur=40x20)` }} className="banner-background-box">
-                <div className="page-content">
-                    <Banner list={bannerList} Active={bannerActive} change={change_bannerActive} config={bannerConfig}/>
-                </div>
-            </div>
-            }
+            {/* 轮播组件 */}
+            <HomeBanner />
+
+            {/* 推荐 */}
+            <HomeRecommend />
         </Fragment>
     )
 }

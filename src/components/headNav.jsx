@@ -1,7 +1,7 @@
 /*
  * @Author: 成中锦
  * @Date: 2020-06-20 16:32:19
- * @LastEditTime: 2020-06-29 17:35:19
+ * @LastEditTime: 2020-06-30 14:24:05
  * @FilePath: \wangyi_music\src\components\headNav.jsx
  * @explain: 头部导航
  */ 
@@ -24,9 +24,7 @@ function Head ( props ) {
     ;const firstListDom = useRef(null)
     ;const secondListDom = useRef(null)
     ;const nowRoute = props.location.pathname
-    ;const navList = useMemo(() => {
-        return JSON.parse(navString)
-    } ,[navString])
+    ;const navList = useMemo(() => JSON.parse(navString) ,[navString])
     //= 头部一级导航的mouse事件回调
     ;const enterCall = ( e , route , index ) => {
         ;const toTarget = e.relatedTarget

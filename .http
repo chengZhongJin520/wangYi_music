@@ -1,1 +1,16 @@
+### 首页轮播图
 GET http://localhost:9991/banner?type=0
+
+### 首页热门推荐
+GET http://localhost:9991/personalized?limit=20
+
+###
+GET http://localhost:9991/playlist/detail?id=19723756
+
+###
+GET http://localhost:9991/top/artists?limit=5
+
+
+###
+# GET http://localhost:9991/dj/hot
+GET http://localhost:9991/dj/toplist/hours
