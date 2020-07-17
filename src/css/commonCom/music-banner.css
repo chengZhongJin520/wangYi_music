@@ -1,0 +1,86 @@
+.music-banner-box {
+    position: relative;
+    margin: 20px 0 37px;
+    height: 184px;
+    padding-left: 16px;
+    padding-top: 28px;
+    background: #f5f5f5;
+    border: 1px solid #fff;
+}
+.music-banner-box .banner-left-btn ,
+.music-banner-box .banner-rigth-btn {
+    position: absolute;
+    top: 71px;
+    transform: none;
+    z-index: 1;
+    background-image: url("../../assets/index.png");
+    background-repeat: no-repeat;
+}
+.music-banner-box .banner-left-btn{
+    left: 4px;
+    background-position: -260px -75px;
+}
+.music-banner-box .banner-left-btn:hover {
+    background-color: transparent;
+    background-position: -280px -75px;
+}
+.music-banner-box .banner-rigth-btn{
+    right: 4px;
+    background-position: -300px -75px;
+}
+.music-banner-box .banner-rigth-btn:hover {
+    background-color: transparent;
+    background-position: -320px -75px;
+}
+.music-banner-box .banner-view {
+    width: calc(100% - 16px);
+    overflow: hidden;
+}
+.music-banner-box ul {
+    display: flex;
+}
+.music-banner-box li{
+    margin-left: 11px;
+    background: url("../../assets/index.png") no-repeat -260px 100px;
+}
+.music-banner-box .item-img-box {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    margin-bottom: 7px;
+}
+.music-banner-box button {
+    position: absolute;
+    left: 74px;
+    bottom: 4px;
+    width: 22px;
+    height: 22px;
+    z-index: 2;
+    background: url("../../assets/iconall.png") no-repeat 0 -85px;
+    cursor: pointer;
+}
+.music-banner-box img {
+    width: 100px;
+    height: 100px;
+}
+
+.music-banner-box .item-img-link {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100px;
+    z-index: 1;
+    background: url("../../assets/coverall.png") no-repeat 0 -570px;
+}
+.music-banner-box .item-link ,
+.music-banner-box .item-artist-link {
+    display: block;
+    width: 90%;
+    line-height: 18px;
+    color: #000;
+    font-size: 12px;
+}
+.music-banner-box .item-artist-link {
+    color: #666;
+}

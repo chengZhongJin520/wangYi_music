@@ -1,0 +1,60 @@
+footer {
+    position: relative;
+    height: 172px;
+    overflow: hidden;
+    border-top: 1px solid #d3d3d3;
+}
+.foot-content {
+    width: 980px;
+    margin: 0 auto;
+}
+.left-text-nav {
+    padding-top: 15px;
+    font-size: 12px;
+    color: #666;
+}
+.left-text-nav p {
+    height: 24px;
+    line-height: 24px;
+    margin-bottom: 0;
+}
+.left-text-nav a {
+    color: #666;
+}
+.left-text-nav p:first-child a{
+    color: #999;
+}
+.left-text-nav p:first-child span {
+    margin: 0 8px 0 10px;
+}
+.left-text-nav .sep {
+    margin-right: 14px;
+}
+.foot-content .right-icon-nav {
+    display: flex;
+    width: 420px;
+    justify-content: space-between;
+    margin-top: 33px;
+}
+.right-icon-nav a {
+    display: block;
+    width: 50px;
+    height: 45px;
+    margin: 0 auto;
+    background-image: url("../../assets/foot_nav_icon.png");
+    background-repeat: no-repeat;
+    background-size: 110px 552px;
+}
+.right-icon-nav i {
+    display: inline-block;
+    width: 52px;
+    height: 14px;
+    margin: 5px 5px 0;
+    background-image: url("../../assets/foot_enter_tt.png");
+    background-repeat: no-repeat;
+    background-size: 180px 92px;
+}
+.right-icon-nav i:nth-child(1) {
+    width: 72px;
+    margin-left: -6px;
+}
